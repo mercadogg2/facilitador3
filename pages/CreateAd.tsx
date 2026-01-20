@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
@@ -12,6 +12,7 @@ interface CreateAdProps {
 const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
   const t = TRANSLATIONS[lang].createAd;
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,8 +42,29 @@ const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError(lang === 'pt' ? 'A imagem deve ter menos de 2MB.' : 'Image must be smaller than 2MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result as string }));
+        setError(null);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.image) {
+      setError(lang === 'pt' ? 'Por favor, carregue uma imagem do veículo.' : 'Please upload a vehicle image.');
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
     
@@ -66,7 +88,7 @@ const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
           image: formData.image,
           subdomain: formData.subdomain || null,
           stand_name: user?.user_metadata?.stand_name || 'Stand Particular',
-          user_id: user.id, // CRÍTICO para RLS
+          user_id: user.id,
           verified: false 
         }]);
 
@@ -75,7 +97,7 @@ const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
       setIsSuccess(true);
       setTimeout(() => navigate('/dashboard'), 2000);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || JSON.stringify(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -105,10 +127,59 @@ const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {error && (
-            <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-100">
-              {error}
+            <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-medium border border-red-100 sticky top-28 z-20 shadow-lg animate-bounce">
+              <i className="fas fa-exclamation-triangle mr-2"></i> {error}
             </div>
           )}
+
+          <section className="bg-white p-8 md:p-12 rounded-[40px] shadow-sm border border-gray-100">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+              <i className="fas fa-camera mr-3 text-blue-600"></i>
+              {t.commercial}
+            </h3>
+            <div className="space-y-8">
+              <div className="flex flex-col items-center justify-center border-4 border-dashed border-gray-100 rounded-[40px] p-12 hover:border-blue-200 transition-all group bg-gray-50/50">
+                {formData.image ? (
+                  <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl">
+                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                    <button 
+                      type="button"
+                      onClick={() => setFormData({...formData, image: ''})}
+                      className="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 shadow-lg"
+                    >
+                      <i className="fas fa-times"></i>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-center cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <i className="fas fa-cloud-upload-alt text-3xl"></i>
+                    </div>
+                    <p className="text-gray-900 font-black text-xl mb-2">{lang === 'pt' ? 'Clique para carregar foto' : 'Click to upload photo'}</p>
+                    <p className="text-gray-400 text-sm">{lang === 'pt' ? 'PNG, JPG ou WEBP (Máx 2MB)' : 'PNG, JPG or WEBP (Max 2MB)'}</p>
+                  </div>
+                )}
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.price} (€)</label>
+                  <input required type="number" name="price" value={formData.price} onChange={handleChange} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-blue-600" placeholder="0.00" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.location}</label>
+                  <input required name="location" value={formData.location} onChange={handleChange} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Ex: Lisboa" />
+                </div>
+              </div>
+            </div>
+          </section>
 
           <section className="bg-white p-8 md:p-12 rounded-[40px] shadow-sm border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
@@ -148,7 +219,7 @@ const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.mileage}</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.mileage} (km)</label>
                 <input required type="number" name="mileage" value={formData.mileage} onChange={handleChange} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
               </div>
               <div>
@@ -172,42 +243,10 @@ const CreateAd: React.FC<CreateAdProps> = ({ lang }) => {
 
           <section className="bg-white p-8 md:p-12 rounded-[40px] shadow-sm border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-              <i className="fas fa-camera mr-3 text-blue-600"></i>
-              {t.commercial}
+              <i className="fas fa-align-left mr-3 text-blue-600"></i>
+              {t.fields.description}
             </h3>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.price}</label>
-                <input required type="number" name="price" value={formData.price} onChange={handleChange} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="0.00" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">{t.upload}</label>
-                <input required name="image" value={formData.image} onChange={handleChange} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="https://imagem.com/foto.jpg" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.location}</label>
-                <input required name="location" value={formData.location} onChange={handleChange} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Ex: Lisboa" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">{t.fields.description}</label>
-                <textarea required name="description" value={formData.description} onChange={handleChange} rows={5} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none" placeholder="Detalhes sobre o estado do veículo, extras, etc."></textarea>
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-white p-8 md:p-12 rounded-[40px] shadow-sm border border-gray-100">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-              <i className="fas fa-bullhorn mr-3 text-blue-600"></i>
-              {t.marketing}
-            </h3>
-            <p className="text-gray-500 mb-8">{t.subdomainDesc}</p>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">{t.subdomainTitle}</label>
-              <div className="flex items-center">
-                <span className="bg-gray-100 px-4 py-4 rounded-l-2xl text-gray-400 text-sm border-r border-white">facilitadorcar.pt/</span>
-                <input name="subdomain" value={formData.subdomain} onChange={handleChange} className="flex-grow px-5 py-4 rounded-r-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm" placeholder={t.subdomainPlaceholder} />
-              </div>
-            </div>
+            <textarea required name="description" value={formData.description} onChange={handleChange} rows={5} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none" placeholder="Detalhes sobre o estado do veículo, extras, etc."></textarea>
           </section>
 
           <button 

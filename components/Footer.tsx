@@ -22,11 +22,26 @@ const Footer: React.FC<FooterProps> = ({ lang }) => {
               alt="Facilitador Car" 
               className="h-24 w-auto mb-6 brightness-0 invert"
             />
-            <p className="text-gray-400 mb-6 max-w-sm">{t.desc}</p>
+            <p className="text-gray-400 mb-8 max-w-sm leading-relaxed">{t.desc}</p>
+            
+            <div className="mt-4">
+              <a 
+                href="https://www.livroreclamacoes.pt/Inicio/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block"
+              >
+                <img 
+                  src="https://facilitadorcar.com/wp-content/uploads/2026/01/download-removebg-preview.png" 
+                  alt="Livro de Reclamações Eletrónico" 
+                  className="h-12 w-auto object-contain brightness-0 invert opacity-60 hover:opacity-100 transition-opacity duration-300"
+                />
+              </a>
+            </div>
           </div>
           <div>
             <h4 className="font-bold mb-4 uppercase text-sm tracking-widest text-gray-500">{t.links}</h4>
-            <ul className="space-y-2 text-gray-400 text-sm">
+            <ul className="space-y-2 text-gray-400 text-sm font-medium">
               <li><Link to="/veiculos" className="hover:text-white transition-colors">{nav.vehicles}</Link></li>
               <li><Link to="/sobre" className="hover:text-white transition-colors">{nav.about}</Link></li>
               <li><Link to="/blog" className="hover:text-white transition-colors">{nav.blog}</Link></li>
@@ -34,14 +49,14 @@ const Footer: React.FC<FooterProps> = ({ lang }) => {
           </div>
           <div>
             <h4 className="font-bold mb-4 uppercase text-sm tracking-widest text-gray-500">{t.legal}</h4>
-            <ul className="space-y-2 text-gray-400 text-sm">
+            <ul className="space-y-2 text-gray-400 text-sm font-medium">
               <li><Link to="/privacidade" className="hover:text-white transition-colors">{lang === 'pt' ? 'Privacidade' : 'Privacy'}</Link></li>
               <li><Link to="/termos" className="hover:text-white transition-colors">{lang === 'pt' ? 'Termos de Uso' : 'Terms of Use'}</Link></li>
               <li><Link to="/cookies" className="hover:text-white transition-colors">Cookies</Link></li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500">
+        <div className="border-t border-gray-800 mt-16 pt-8 text-center text-sm text-gray-500 font-medium">
           <p>© 2024 Facilitador Car. {t.rights}</p>
         </div>
       </div>

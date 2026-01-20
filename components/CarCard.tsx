@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Car, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -81,10 +81,14 @@ const CarCard: React.FC<CarCardProps> = ({ car, lang, onToggleFavorite, isFavori
             <i className="fas fa-map-marker-alt mr-2.5 text-gray-400 w-4 text-center"></i>
             {car.location}
           </div>
-          <div className="flex items-center">
+          <Link 
+            to={`/stand/${encodeURIComponent(car.stand_name)}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center hover:text-blue-600 transition-colors"
+          >
             <i className="fas fa-store mr-2.5 text-gray-400 w-4 text-center"></i>
-            <span className="truncate">{car.stand_name}</span>
-          </div>
+            <span className="truncate underline underline-offset-4 decoration-gray-200">{car.stand_name}</span>
+          </Link>
         </div>
 
         <div className="mt-auto">

@@ -26,7 +26,6 @@ const CarDetail: React.FC<CarDetailProps> = ({ lang, onToggleFavorite, favorites
   useEffect(() => {
     const fetchCar = async () => {
       setLoading(true);
-      // Reset scroll to top when changing car
       window.scrollTo(0, 0);
       
       const { data, error } = await supabase
@@ -139,8 +138,14 @@ const CarDetail: React.FC<CarDetailProps> = ({ lang, onToggleFavorite, favorites
                 </button>
               </div>
 
-              <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 space-y-6">
-                <h4 className="font-bold text-gray-900">{t.dealerInfo}</h4>
+              <Link 
+                to={`/stand/${encodeURIComponent(car.stand_name)}`}
+                className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 space-y-6 block hover:border-blue-200 transition-all group"
+              >
+                <div className="flex justify-between items-start">
+                   <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{t.dealerInfo}</h4>
+                   <i className="fas fa-chevron-right text-gray-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
+                </div>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-xl font-bold">{car.stand_name?.[0]}</div>
                   <div>
@@ -148,7 +153,11 @@ const CarDetail: React.FC<CarDetailProps> = ({ lang, onToggleFavorite, favorites
                     <p className="text-sm text-gray-400"><i className="fas fa-map-marker-alt mr-1"></i>{car.location}</p>
                   </div>
                 </div>
-              </div>
+                <div className="pt-4 border-t border-gray-50 flex items-center gap-2 text-blue-600 text-xs font-black uppercase tracking-widest">
+                   <i className="fas fa-certificate"></i>
+                   Stand Verificado Facilitador
+                </div>
+              </Link>
             </div>
           </aside>
         </div>

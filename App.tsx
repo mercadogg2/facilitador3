@@ -12,6 +12,7 @@ import Article from './pages/Article';
 import CarDetail from './pages/CarDetail';
 import StandDashboard from './pages/StandDashboard';
 import CreateAd from './pages/CreateAd';
+import EditAd from './pages/EditAd';
 import UserArea from './pages/UserArea';
 import EditProfile from './pages/EditProfile';
 import AdminDashboard from './pages/AdminDashboard';
@@ -22,6 +23,8 @@ import AdminLogin from './pages/AdminLogin';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import CookiePolicy from './pages/CookiePolicy';
+import StandDetail from './pages/StandDetail';
+import StandsList from './pages/StandsList';
 import { supabase } from './lib/supabase';
 
 const App: React.FC = () => {
@@ -33,7 +36,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkUser = async () => {
-      // 1. Verificar se existe uma sessão mockada (local)
       const localSession = localStorage.getItem('fc_session');
       if (localSession) {
         try {
@@ -47,7 +49,6 @@ const App: React.FC = () => {
         }
       }
 
-      // 2. Tentar verificar sessão real no Supabase
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
@@ -130,14 +131,20 @@ const App: React.FC = () => {
             <Route path="/sobre" element={<About lang={language} />} />
             <Route path="/blog" element={<Blog lang={language} />} />
             <Route path="/blog/:id" element={<Article lang={language} />} />
+            <Route path="/stands" element={<StandsList lang={language} />} />
+            <Route path="/stand/:standName" element={<StandDetail lang={language} onToggleFavorite={handleToggleFavorite} favorites={favorites} />} />
             
             <Route 
               path="/dashboard" 
-              element={isLoggedIn && role === UserRole.STAND ? <StandDashboard lang={language} role={role} /> : <Navigate to="/login" />} 
+              element={isLoggedIn && (role === UserRole.STAND || role === UserRole.ADMIN) ? <StandDashboard lang={language} role={role} /> : <Navigate to="/login" />} 
             />
             <Route 
               path="/anunciar" 
               element={isLoggedIn && role === UserRole.STAND ? <CreateAd lang={language} /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/editar-anuncio/:id" 
+              element={isLoggedIn && (role === UserRole.STAND || role === UserRole.ADMIN) ? <EditAd lang={language} /> : <Navigate to="/login" />} 
             />
             
             <Route 

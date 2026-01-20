@@ -38,6 +38,9 @@ const Navbar: React.FC<NavbarProps> = ({ lang, role, isLoggedIn, onToggleLang, o
               <Link to="/veiculos" className={`${isActive('/veiculos') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-900'} px-3 py-2 text-sm font-bold h-full flex items-center transition-all`}>
                 {t.vehicles}
               </Link>
+              <Link to="/stands" className={`${isActive('/stands') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-900'} px-3 py-2 text-sm font-bold h-full flex items-center transition-all`}>
+                {t.stands}
+              </Link>
               <Link to="/sobre" className={`${isActive('/sobre') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-900'} px-3 py-2 text-sm font-bold h-full flex items-center transition-all`}>
                 {t.about}
               </Link>

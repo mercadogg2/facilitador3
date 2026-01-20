@@ -41,62 +41,12 @@ export const MOCK_BLOG: BlogPost[] = [
     date: '2024-11-20',
     image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&q=80&w=800',
     reading_time: '7 min'
-  },
-  {
-    id: 'b3',
-    title: 'O Mercado Automóvel em 2026: Digitalização e Confiança',
-    excerpt: 'Como a inteligência artificial e os stands verificados estão a mudar a forma como compramos carros.',
-    content: `A confiança tornou-se a moeda principal do mercado automóvel. Já não basta tel o melhor preço; é preciso garantir a proveniência. A digitalização permite agora que o comprador visualize o carro em 360º e reserve online com garantias de devolução. No Facilitador Car, lideramos esta mudança ao certificar apenas stands que cumprem critérios rigorosos de pós-venda e transparência documental.`,
-    author: 'Carlos Mendes, CEO',
-    date: '2024-12-05',
-    image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800',
-    reading_time: '4 min'
-  },
-  {
-    id: 'b4',
-    title: 'Financiamento Automóvel: Taxas e Melhores Condições para 2026',
-    excerpt: 'Entenda como funcionam os novos juros e as vantagens do leasing para particulares este ano.',
-    content: `Em 2026, o mercado de crédito automóvel está mais competitivo. Com a descida das taxas de referência, o ALD e o Leasing tornaram-se opções muito viáveis para quem procura trocar de carro de 4 em 4 anos. Neste guia, explicamos como calcular o custo total do crédito (MTIC) e por que deve sempre comparar a TAEG antes de assinar contrato com o stand.`,
-    author: 'Ricardo Costa',
-    date: '2025-01-10',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=800',
-    reading_time: '6 min'
-  },
-  {
-    id: 'b5',
-    title: 'Checklist de Manutenção: Como manter o valor de revenda do seu carro',
-    excerpt: 'Pequenos cuidados diários que podem significar mais 2.000€ no momento da troca.',
-    content: `A desvalorização de um veículo pode ser travada com cuidados simples. Manter o livro de revisões atualizado num concessionário oficial ou oficina de confiança é o fator número 1. Além disso, a conservação da pintura e a limpeza profunda do interior são detalhes que os stands verificados do Facilitador Car analisam minuciosamente no momento da retoma. Descubra os 5 pontos críticos que nunca deve ignorar.`,
-    author: 'Oficina Facilitador',
-    date: '2025-01-22',
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&q=80&w=800',
-    reading_time: '5 min'
-  },
-  {
-    id: 'b6',
-    title: 'Importar Carros em 2026: Guia Completo de Custos e ISV',
-    excerpt: 'Vale a pena procurar o seu próximo veículo na Alemanha ou Bélgica este ano? Fazemos as contas.',
-    content: `A importação continua a ser uma via popular para aceder a extras premium a preços mais baixos. Contudo, em 2026, as novas tabelas de ISV penalizam severamente os veículos a combustão com mais de 160g de CO2. Para elétricos, a importação é quase isenta de impostos, tornando-se o negócio do ano. Detalhamos os custos de transporte, inspeção B e legalização para que não tenha surpresas.`,
-    author: 'Marta Rodrigues',
-    date: '2025-02-05',
-    image: 'https://images.unsplash.com/photo-1542362567-b055002b91f4?auto=format&fit=crop&q=80&w=800',
-    reading_time: '8 min'
-  },
-  {
-    id: 'b7',
-    title: 'Marcas que menos desvalorizam em 2026: Onde investir?',
-    excerpt: 'Descubra quais os modelos que melhor retêm o valor no mercado de usados em Portugal.',
-    content: `Comprar um carro é um investimento em mobilidade, mas ninguém quer perder dinheiro. Em 2026, marcas como Toyota, Porsche e Tesla lideram a retenção de valor. A fiabilidade híbrida da Toyota e a escassez de componentes para elétricos premium mantêm os preços de revenda elevados. Analisamos o mercado nacional e os segmentos que se mantêm mais resilientes à inflação automóvel.`,
-    author: 'Análise de Mercado',
-    date: '2025-02-12',
-    image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800',
-    reading_time: '6 min'
   }
 ];
 
 export const TRANSLATIONS = {
   pt: {
-    nav: { home: 'Início', vehicles: 'Veículos', about: 'Sobre', blog: 'Blog', dashboard: 'Stand', client: 'Área Cliente', admin: 'Admin', login: 'Entrar' },
+    nav: { home: 'Início', vehicles: 'Veículos', stands: 'Stands', about: 'Sobre', blog: 'Blog', dashboard: 'Stand', client: 'Área Cliente', admin: 'Admin', login: 'Entrar' },
     home: {
       hero: 'O Facilitador Car simplifica a sua compra.',
       subHero: 'Compre com segurança em stands verificados e com o apoio de quem percebe do assunto. De Portugal aos portugueses.',
@@ -111,6 +61,23 @@ export const TRANSLATIONS = {
         { title: 'Apoio de Influenciadores', desc: 'Parceiros que testam e aprovam os veículos.' },
         { title: 'Negociação Transparente', desc: 'Canal direto via WhatsApp para maior agilidade.' }
       ]
+    },
+    stands: {
+      title: 'Stands Certificados',
+      subtitle: 'Conheça a nossa rede de parceiros rigorosamente selecionados para garantir a sua segurança.',
+      searchPlaceholder: 'Pesquisar por nome ou cidade...',
+      viewStock: 'Ver Stock',
+      verifiedPartner: 'Parceiro Certificado',
+      noResults: 'Nenhum stand encontrado com estes critérios.'
+    },
+    standDetail: {
+      viewStock: 'Ver Stock Completo',
+      totalVehicles: 'veículos disponíveis',
+      since: 'Parceiro desde',
+      location: 'Localização',
+      contactStand: 'Contactar Stand',
+      aboutStand: 'Sobre o Stand',
+      verifiedReason: 'Este stand passou pelo rigoroso processo de auditoria Facilitador Car, garantindo transparência documental e qualidade mecânica.'
     },
     auth: {
       loginTitle: 'Bem-vindo de volta',
@@ -300,7 +267,7 @@ export const TRANSLATIONS = {
     }
   },
   en: {
-    nav: { home: 'Home', vehicles: 'Vehicles', about: 'About', blog: 'Blog', dashboard: 'Stand', client: 'Client', admin: 'Admin', login: 'Login' },
+    nav: { home: 'Home', vehicles: 'Vehicles', stands: 'Dealers', about: 'About', blog: 'Blog', dashboard: 'Stand', client: 'Client', admin: 'Admin', login: 'Login' },
     home: {
       hero: 'Facilitador Car simplifies your purchase.',
       subHero: 'Buy safely in verified dealerships with expert support.',
@@ -315,6 +282,23 @@ export const TRANSLATIONS = {
         { title: 'Influencer Support', desc: 'Partners who test and approve vehicles.' },
         { title: 'Direct WhatsApp channel for speed.' }
       ]
+    },
+    stands: {
+      title: 'Certified Dealers',
+      subtitle: 'Meet our network of rigorously selected partners to ensure your safety.',
+      searchPlaceholder: 'Search by name or city...',
+      viewStock: 'View Stock',
+      verifiedPartner: 'Certified Partner',
+      noResults: 'No dealers found with these criteria.'
+    },
+    standDetail: {
+      viewStock: 'View Full Stock',
+      totalVehicles: 'vehicles available',
+      since: 'Partner since',
+      location: 'Location',
+      contactStand: 'Contact Dealer',
+      aboutStand: 'About Dealership',
+      verifiedReason: 'This dealer has passed the Facilitador Car audit, ensuring documental transparency and mechanical quality.'
     },
     auth: {
       loginTitle: 'Welcome back',
