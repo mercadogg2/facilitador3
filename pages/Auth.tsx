@@ -54,7 +54,8 @@ const Auth: React.FC<AuthProps> = ({ lang, mode: initialMode, onLogin }) => {
             data: {
               full_name: formData.name,
               stand_name: userType === UserRole.STAND ? formData.standName : null,
-              role: userType
+              role: userType,
+              status: userType === UserRole.STAND ? 'pending' : 'approved'
             }
           }
         });
@@ -69,7 +70,8 @@ const Auth: React.FC<AuthProps> = ({ lang, mode: initialMode, onLogin }) => {
             email: formData.email,
             role: userType,
             stand_name: userType === UserRole.STAND ? formData.standName : null,
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            status: userType === UserRole.STAND ? 'pending' : 'approved'
           }]);
           
           if (profileError) {

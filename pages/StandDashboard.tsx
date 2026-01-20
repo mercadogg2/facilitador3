@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Language, Car, Lead, UserRole } from '../types';
+import { Language, Car, Lead, UserRole, ProfileStatus } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { supabase } from '../lib/supabase';
@@ -16,6 +16,7 @@ const StandDashboard: React.FC<DashboardProps> = ({ lang, role }) => {
   const tc = TRANSLATIONS[lang].common;
   const navigate = useNavigate();
   const [standName, setStandName] = useState('');
+  const [status, setStatus] = useState<ProfileStatus>('approved');
   const [myCars, setMyCars] = useState<Car[]>([]);
   const [myLeads, setMyLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,31 +30,42 @@ const StandDashboard: React.FC<DashboardProps> = ({ lang, role }) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Se tivermos utilizador real no Supabase
       if (user) {
         setStandName(user.user_metadata?.stand_name || 'Stand');
-
-        // Busca anúncios do usuário logado
-        const { data: carsData } = await supabase
-          .from('cars')
-          .select('*')
-          .eq('user_id', user.id);
         
-        if (carsData) setMyCars(carsData);
+        // Verificar status do perfil na tabela pública
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('status')
+          .eq('id', user.id)
+          .single();
+        
+        const currentStatus = profile?.status || user.user_metadata?.status || 'pending';
+        setStatus(currentStatus);
 
-        // Busca leads dos carros do usuário
-        const { data: leadsData } = await supabase
-          .from('leads')
-          .select('*, cars(brand, model)')
-          .order('created_at', { ascending: false });
+        if (currentStatus === 'approved') {
+          // Busca anúncios do usuário logado
+          const { data: carsData } = await supabase
+            .from('cars')
+            .select('*')
+            .eq('user_id', user.id);
+          
+          if (carsData) setMyCars(carsData);
 
-        if (leadsData) setMyLeads(leadsData as any);
+          // Busca leads dos carros do usuário
+          const { data: leadsData } = await supabase
+            .from('leads')
+            .select('*, cars(brand, model)')
+            .order('created_at', { ascending: false });
+
+          if (leadsData) setMyLeads(leadsData as any);
+        }
       } else {
-        // Fallback para sessão local se as credenciais mestre forem usadas (embora stands costumem ser reais)
         const localSession = localStorage.getItem('fc_session');
         if (localSession) {
           const session = JSON.parse(localSession);
           setStandName(session.stand_name || 'Meu Stand');
+          setStatus('approved'); // Mocked admins/local are approved
         }
       }
     } catch (e) {
@@ -69,13 +81,81 @@ const StandDashboard: React.FC<DashboardProps> = ({ lang, role }) => {
   const handleDeleteCar = async (id: string) => {
     if (!window.confirm(tc.confirmDelete)) return;
     
-    const { error } = await supabase.from('cars').delete().eq('id', id);
-    if (error) {
-      alert('Erro ao remover: ' + error.message);
-    } else {
+    try {
+      const { error } = await supabase.from('cars').delete().eq('id', id);
+      
+      // Se houver erro e não houver sessão local (bypass), alertamos
+      if (error && !localStorage.getItem('fc_session')) {
+        throw error;
+      }
+      
+      // Remove do estado local
       setMyCars(prev => prev.filter(car => car.id !== id));
+      alert(lang === 'pt' ? "Viatura removida com sucesso!" : "Vehicle removed successfully!");
+    } catch (err: any) {
+      alert('Erro ao remover: ' + err.message);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (status === 'pending') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="max-w-xl w-full bg-white rounded-[40px] shadow-2xl p-10 md:p-16 text-center border border-gray-100 animate-in zoom-in duration-500">
+          <div className="w-24 h-24 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 text-4xl">
+            <i className="fas fa-clock"></i>
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 mb-4">Conta em Verificação</h2>
+          <p className="text-gray-500 leading-relaxed mb-10">
+            Olá <span className="font-bold text-gray-900">{standName}</span>! O seu pedido para se juntar à rede Facilitador Car está a ser analisado pela nossa equipa administrativa. 
+            <br/><br/>
+            Este processo costuma demorar entre 12 a 24 horas úteis para garantir a qualidade e credibilidade da nossa plataforma. Assim que for aprovado, terá acesso total ao seu painel.
+          </p>
+          <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 flex items-center gap-4 text-left">
+            <i className="fas fa-info-circle text-blue-600 text-xl"></i>
+            <p className="text-xs text-blue-800 font-medium">Receberá um e-mail de confirmação assim que o seu stand for ativado. Agradecemos a paciência!</p>
+          </div>
+          <button 
+            onClick={() => navigate('/')}
+            className="mt-10 text-gray-400 font-bold hover:text-gray-600 transition-colors"
+          >
+            Voltar ao Início
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'rejected') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="max-w-xl w-full bg-white rounded-[40px] shadow-2xl p-10 md:p-16 text-center border border-red-100 animate-in zoom-in duration-500">
+          <div className="w-24 h-24 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-8 text-4xl">
+            <i className="fas fa-times"></i>
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 mb-4">Acesso Negado</h2>
+          <p className="text-gray-500 leading-relaxed mb-10">
+            Lamentamos informar, mas o seu stand não foi aprovado para integrar a rede Facilitador Car neste momento. 
+            <br/><br/>
+            Os nossos critérios de verificação são rigorosos para manter a confiança dos compradores. Se acredita tratar-se de um erro, contacte o suporte.
+          </p>
+          <button 
+            onClick={() => navigate('/')}
+            className="text-gray-400 font-bold hover:text-gray-600 transition-colors"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const statsData = [
     { name: lang === 'pt' ? 'Seg' : 'Mon', leads: 4, views: 120 },
@@ -89,7 +169,7 @@ const StandDashboard: React.FC<DashboardProps> = ({ lang, role }) => {
 
   return (
     <div className="bg-gray-50 min-h-screen p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl auto space-y-8">
         <header className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{t.title}</h1>

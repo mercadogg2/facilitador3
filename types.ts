@@ -5,6 +5,8 @@ export enum UserRole {
   ADMIN = 'admin'
 }
 
+export type ProfileStatus = 'pending' | 'approved' | 'rejected';
+
 export interface UserProfile {
   id: string;
   full_name: string;
@@ -14,6 +16,7 @@ export interface UserProfile {
   created_at: string;
   last_sign_in?: string;
   phone?: string;
+  status: ProfileStatus;
 }
 
 export interface Car {

@@ -46,7 +46,7 @@ export const MOCK_BLOG: BlogPost[] = [
     id: 'b3',
     title: 'O Mercado Automóvel em 2026: Digitalização e Confiança',
     excerpt: 'Como a inteligência artificial e os stands verificados estão a mudar a forma como compramos carros.',
-    content: `A confiança tornou-se a moeda principal do mercado automóvel. Já não basta ter o melhor preço; é preciso garantir a proveniência. A digitalização permite agora que o comprador visualize o carro em 360º e reserve online com garantias de devolução. No Facilitador Car, lideramos esta mudança ao certificar apenas stands que cumprem critérios rigorosos de pós-venda e transparência documental.`,
+    content: `A confiança tornou-se a moeda principal do mercado automóvel. Já não basta tel o melhor preço; é preciso garantir a proveniência. A digitalização permite agora que o comprador visualize o carro em 360º e reserve online com garantias de devolução. No Facilitador Car, lideramos esta mudança ao certificar apenas stands que cumprem critérios rigorosos de pós-venda e transparência documental.`,
     author: 'Carlos Mendes, CEO',
     date: '2024-12-05',
     image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800',
@@ -228,7 +228,7 @@ export const TRANSLATIONS = {
         { title: 'Inovação', desc: 'Tecnologia de ponta para busca avançada e gestão de leads em tempo real.' }
       ],
       historyTitle: 'Próxima Paragem: Fevereiro de 2026',
-      historyDesc: 'Atualmente estamos em fase de beta privada, selecionando os melhores parceiros em Portugal e Espanha para o lançamento oficial.',
+      historyDesc: 'Atualmente estamos em fase de beta privada, selecionando os melhores parceiros em Portugal para o lançamento oficial.',
       stats: ['Stands Certificados', 'Segurança']
     },
     blog: {
@@ -432,7 +432,7 @@ export const TRANSLATIONS = {
         { title: 'Innovation', desc: 'Cutting-edge technology for advanced search and real-time lead management.' }
       ],
       historyTitle: 'Next Stop: February 2026',
-      historyDesc: 'We are currently in private beta, selecting the best partners in Portugal and Spain for the official launch.',
+      historyDesc: 'We are currently in private beta, selecting the best partners in Portugal for the official launch.',
       stats: ['Certified Stands', 'Security']
     },
     blog: {
